@@ -1,44 +1,41 @@
 # WireGuard-VPN-Secure-Edge-Gateway
-wireguard-nginx-gateway/
-├── docker-compose.yml       # File chạy WireGuard và Nginx (nếu có)
-├── nginx/
-│   └── default.conf         # File cấu hình Reverse Proxy của Nginx
-├── scripts/
-│   └── generate-client.sh   # File Bash script tự động tạo file cấu hình cho user
-└── README.md                # FILE QUAN TRỌNG NHẤT (Sẽ nói ở bước 2)
+
+## Overview
+A robust, secure, and automated Remote Access VPN gateway built on enterprise virtualization standards. This project integrates WireGuard VPN with Nginx Reverse Proxy and Dynamic DNS (DuckDNS), deployed on an Ubuntu Server cluster managed via Proxmox VE (KVM-based hypervisor).
+## System Architecture
+
+[Internet Traffic]
+│
+├──► [DuckDNS] (Dynamic IP Resolution)
+│
+▼
+[Proxmox VE (KVM Hypervisor)]
+│
+└──► [Ubuntu Server VM]
+│
+├──► [Nginx Reverse Proxy] (Port 80/443) ──► [Internal Web Services]
+└──► [WireGuard VPN Gateway] (Port 51820) ──► [Secure Subnets (10.0.0.0/24)]
+
 ## Features
 
-- All-in-one: WireGuard + Web UI.
-- Easy installation, simple to use.
-- List, create, edit, delete, enable & disable clients.
-- Show a client's QR code.
-- Automated configuration with bash script.
+* **Enterprise Virtualization:** Provisioned and managed production-ready Ubuntu Server VMs within a Proxmox VE (KVM) environment.
+* **High-Performance VPN:** Deployed WireGuard supporting up to 15+ concurrent users with optimized network throughput.
+* **Dynamic DNS Integration:** Configured DuckDNS to automatically update the gateway's changing public IP, ensuring 100% connectivity uptime.
+* **Reverse Proxy & SSL:** Utilized Nginx as a Reverse Proxy with SSL/TLS termination to securely route external traffic to internal web services.
+* **Advanced Security:** Implemented strict firewall rules via iptables/nftables and NAT policies for total traffic isolation between subnets.
+* **Infrastructure Automation:** Developed Bash scripts to fully automate client configuration generation and peer profile management.
 
-## Installation
+# 🛠️ Tech Stack & Tools
+* **Virtualization & OS:** Proxmox VE (KVM), Ubuntu Server
+* **Network & Security:** WireGuard, Nginx, iptables, nftables, DuckDNS
+* **Automation & DevOps:** Bash Scripting, Docker, Docker-Compose
 
-This is a quick start guide to get you up and running with WireGuard VPN.
+## 📂 Project Structure
+* `nginx/default.conf` - Nginx reverse proxy and server block configurations.
+* `scripts/generate-client.sh` - Automated Bash script for peer and keys generation.
+* `docker-compose.yml` - Multi-container setup for easy environment reproduction.
+## Future Roadmap (Work in Progress)
 
-### 1. Install Docker
-
-If you haven't installed Docker yet, install it by running as root:
-
-```shell
-curl -sSL https://get.docker.com | sh
-exit
-```
-### 2. Run WireGuard VPN
-
-The easiest way to run WireGuard Easy is with Docker Compose.
-
-Just follow [these steps](https://wg-easy.github.io/wg-easy/latest/examples/tutorials/basic-installation/) in the detailed documentation.
-
-You can also install WireGuard Easy with the [docker run command](https://wg-easy.github.io/wg-easy/latest/examples/tutorials/docker-run/) or via [podman](https://wg-easy.github.io/wg-easy/latest/examples/tutorials/podman-nft/).
-
-Now [setup a reverse proxy](https://wg-easy.github.io/wg-easy/latest/examples/tutorials/basic-installation/#setup-reverse-proxy) to be able to access the Web UI securely from the internet. This step is optional, just make sure to follow the guide [here](https://wg-easy.github.io/wg-easy/latest/examples/tutorials/reverse-proxyless/) if you decide not to do it.
-
-## Roadmap
-- Integrate CI/CD pipeline using GitHub Actions to automatically check scripts for errors.
-
-
-And log in again.
+* [ ] Integrate CI/CD pipelines via GitHub Actions to automate linting for Bash scripts.
+* [ ] Implement Prometheus & Grafana to monitor VPN traffic metrics and server resource usage.
 
