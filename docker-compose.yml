@@ -1,7 +1,8 @@
 version: '3.8'
+
 services:
-  app:
-    build: .
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
@@ -10,4 +11,26 @@ services:
       - '443:443'
     volumes:
       - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - ./letsencrypt:/letsencrypt
+
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Ho_Chi_Minh
+      - SERVERURL=YOUR_DUCKDNS_SUBDOMAIN.duckdns.org # Thay bằng domain DuckDNS của bạn
+      - SERVERPORT=51820
+      - PEERS=5 # Số lượng client muốn tạo sẵn
+      - PEERDNS=1.1.1.1
+      - INTERNAL_SUBNET=10.13.13.0
+    ports:
+      - '51820:51820/udp' # Mở cổng UDP cho WireGuard
+    volumes:
+      - ./wireguard-config:/config
+      - /lib/modules:/lib/modules
+    restart: unless-stopped
