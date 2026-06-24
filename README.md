@@ -30,9 +30,8 @@ graph TD
 
 ## Deployment & Verification
 
-Dự án đã được triển khai thực tế trên môi trường Ubuntu Server thông qua Docker-Compose và xác thực hoạt động ổn định với các minh chứng cấu hình sau:
-
-### 1. Hệ thống Container Hoạt động Ổn định (Container Status)
+The project has been deployed on an Ubuntu Server environment via Docker-Compose and has been verified to be stable with the following configuration proofs:
+### 1. Container System Operating Stable (Container Status)
 Tất cả các dịch vụ (Nginx Proxy Manager, WireGuard App Core) đều được cô lập và khởi chạy thành công qua Docker, giải phóng hoàn toàn xung đột kẹt Port 80 hệ thống.
 
 ![Docker Containers Running](./images/Status-docker-ps.png)  
@@ -53,11 +52,11 @@ Verify that VPN port `51820/UDP` is open and record the actual network traffic (
 ## 💻 Getting Started
 
 ### Requirement
-- Docker & Docker-Compose đã được cấu hình.
-- Đảm bảo Port `80`, `443` và `51820/udp` không bị chiếm bởi các dịch vụ gốc (như nginx.service hệ điều hành).
+- Docker & Docker-Compose have been configured.
+- Ensure that Ports `80`, `443`, and `51820/udp` are not occupied by native services (such as the operating system's nginx.service).
 
-### Các bước khởi chạy nhanh
-1. Clone dự án và di chuyển vào thư mục:
+### Quick Start
+1. Clone and cd:
    ```bash
    git clone https://github.com/tranngocsonDEV/WireGuard-VPN-Secure-Edge-Gateway.git
    cd WireGuard-VPN-Secure-Edge-Gateway
