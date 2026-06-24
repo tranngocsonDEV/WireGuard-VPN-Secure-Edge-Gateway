@@ -1,0 +1,6 @@
+# Không upload các dữ liệu nhạy cảm hoặc key bảo mật
+data/
+letsencrypt/
+*.conf
+*.key
+.env
