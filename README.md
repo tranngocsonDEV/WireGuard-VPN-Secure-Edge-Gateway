@@ -4,17 +4,20 @@
 A robust, secure, and automated Remote Access VPN gateway built on enterprise virtualization standards. This project integrates WireGuard VPN with Nginx Reverse Proxy and Dynamic DNS (DuckDNS), deployed on an Ubuntu Server cluster managed via Proxmox VE (KVM-based hypervisor).
 ## System Architecture
 
-[Internet Traffic]
-│
-├──► [DuckDNS] (Dynamic IP Resolution)
-│
-▼
-[Proxmox VE (KVM Hypervisor)]
-│
-└──► [Ubuntu Server VM]
-│
-├──► [Nginx Reverse Proxy] (Port 80/443) ──► [Internal Web Services]
-└──► [WireGuard VPN Gateway] (Port 51820) ──► [Secure Subnets (10.0.0.0/24)]
+```mermaid
+graph TD
+    User([Internet Traffic / Remote Client]) -->|Dynamic IP Domain| DDNS[DuckDNS]
+    DDNS -->|Port Forward 80/443/51820| PVE[Proxmox VE Hypervisor]
+    PVE -->|KVM Virtual Machine| Ubuntu[Ubuntu Server VM]
+    
+    subgraph Docker Microservices Cluster
+        Ubuntu -->|Port 80/443| Nginx[Nginx Reverse Proxy Manager]
+        Ubuntu -->|Port 51820 UDP| WG[WireGuard VPN Gateway]
+    end
+    
+    Nginx -->|SSL Termination| Web[Internal Web Services]
+    WG -->|iptables / NAT Isolation| Subnet[Secure Subnets 10.0.0.0/24]
+```
 
 ## Features
 
@@ -24,6 +27,58 @@ A robust, secure, and automated Remote Access VPN gateway built on enterprise vi
 * **Reverse Proxy & SSL:** Utilized Nginx as a Reverse Proxy with SSL/TLS termination to securely route external traffic to internal web services.
 * **Advanced Security:** Implemented strict firewall rules via iptables/nftables and NAT policies for total traffic isolation between subnets.
 * **Infrastructure Automation:** Developed Bash scripts to fully automate client configuration generation and peer profile management.
+
+## Deployment & Verification
+
+Dự án đã được triển khai thực tế trên môi trường Ubuntu Server thông qua Docker-Compose và xác thực hoạt động ổn định với các minh chứng cấu hình sau:
+
+### 1. Hệ thống Container Hoạt động Ổn định (Container Status)
+Tất cả các dịch vụ (Nginx Proxy Manager, WireGuard App Core) đều được cô lập và khởi chạy thành công qua Docker, giải phóng hoàn toàn xung đột kẹt Port 80 hệ thống.
+
+![Docker Containers Running](./images/docker_status.png)  
+*(Mẹo: Hãy chụp màn hình kết quả của lệnh `docker ps` hoặc `docker-compose ps` cho thấy các container trạng thái Up/Healthy và chèn vào đây)*
+
+### 2. Trạng thái Interface WireGuard & Lưu lượng Peer
+Xác thực cổng VPN `51820/UDP` đã mở và ghi nhận lưu lượng mạng (Traffic Handshake) truyền tải thực tế giữa Client và Server.
+
+```bash
+\$ sudo wg show
+interface: wg0
+  public key: [ĐÃ_ẨN_BẢO_MẬT]
+  listening port: 51820
+
+peer: [Client_PC_Key]
+  endpoint: 14.226.x.x:61023
+  allowed ips: 10.7.0.2/32
+  latest handshake: 14 seconds ago
+  transfer: 4.12 MiB received, 28.51 MiB sent
+```
+*(Mẹo: Bạn có thể chụp ảnh log terminal của lệnh `sudo wg show` hoặc copy đoạn text dạng codeblock như trên, nhớ xóa/che bớt các ký tự ký tự key nhạy cảm)*
+
+### 3. Minh chứng Đổi IP & Định tuyến An toàn (Client Verification)
+- **Trước khi bật VPN:** IP thuộc ISP nhà mạng cá nhân (Vị trí: Vietnam).
+- **Sau khi bật VPN:** Toàn bộ lưu lượng mạng được định tuyến qua Secure Edge Gateway. Kiểm tra qua `iphub.info` hiển thị chính xác **IP Public của vpn-server Proxmox**.
+
+![VPN Client Connection Success](./images/vpn_client_connected.png)  
+*(Mẹo: Chụp ảnh giao diện App WireGuard trên máy tính của bạn hiện nút màu Xanh lá cây kèm số Data nhảy liên tục)*
+
+## 💻 Getting Started
+
+### Requirement
+- Docker & Docker-Compose đã được cấu hình.
+- Đảm bảo Port `80`, `443` và `51820/udp` không bị chiếm bởi các dịch vụ gốc (như nginx.service hệ điều hành).
+
+### Các bước khởi chạy nhanh
+1. Clone dự án và di chuyển vào thư mục:
+   ```bash
+   git clone https://github.com/tranngocsonDEV/WireGuard-VPN-Secure-Edge-Gateway.git
+   cd WireGuard-VPN-Secure-Edge-Gateway
+   ```
+2. Phân quyền và cấu hình biến môi trường DuckDNS (nếu có).
+3. Khởi chạy cụm Container bằng Docker-Compose (Cấp quyền Docker Socket nếu cần):
+   ```bash
+   docker-compose up -d --build
+   ```
 
 # 🛠️ Tech Stack & Tools
 * **Virtualization & OS:** Proxmox VE (KVM), Ubuntu Server
