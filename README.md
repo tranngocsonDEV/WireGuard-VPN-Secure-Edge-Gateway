@@ -61,8 +61,8 @@ Verify that VPN port `51820/UDP` is open and record the actual network traffic (
    git clone https://github.com/tranngocsonDEV/WireGuard-VPN-Secure-Edge-Gateway.git
    cd WireGuard-VPN-Secure-Edge-Gateway
    ```
-2. Phân quyền và cấu hình biến môi trường DuckDNS (nếu có).
-3. Khởi chạy cụm Container bằng Docker-Compose (Cấp quyền Docker Socket nếu cần):
+2. Assign permissions and configure DuckDNS environment variables (if applicable).
+3. Launch the container cluster using Docker-Compose (Grant Docker Socket permissions if needed):
    ```bash
    docker-compose up -d --build
    ```
