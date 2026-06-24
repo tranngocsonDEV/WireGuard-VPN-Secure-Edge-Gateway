@@ -32,7 +32,7 @@ A robust, secure, and automated Remote Access VPN gateway built on enterprise vi
 
 ## 📂 Project Structure
 * `nginx/default.conf` - Nginx reverse proxy and server block configurations.
-* `scripts/generate-client.sh` - Automated Bash script for peer and keys generation.
+* `scripts/duckdns-update.sh` - Automated Bash script for peer and keys generation.
 * `docker-compose.yml` - Multi-container setup for easy environment reproduction.
 ## Future Roadmap (Work in Progress)
 
