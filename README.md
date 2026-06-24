@@ -35,8 +35,7 @@ Dự án đã được triển khai thực tế trên môi trường Ubuntu Serv
 ### 1. Hệ thống Container Hoạt động Ổn định (Container Status)
 Tất cả các dịch vụ (Nginx Proxy Manager, WireGuard App Core) đều được cô lập và khởi chạy thành công qua Docker, giải phóng hoàn toàn xung đột kẹt Port 80 hệ thống.
 
-![Docker Containers Running](./images/docker_status.png)  
-*(Mẹo: Hãy chụp màn hình kết quả của lệnh `docker ps` hoặc `docker-compose ps` cho thấy các container trạng thái Up/Healthy và chèn vào đây)*
+![Docker Containers Running](./images/Status-docker-ps.png)  
 
 ### 2. Trạng thái Interface WireGuard & Lưu lượng Peer
 Xác thực cổng VPN `51820/UDP` đã mở và ghi nhận lưu lượng mạng (Traffic Handshake) truyền tải thực tế giữa Client và Server.
