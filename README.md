@@ -62,7 +62,12 @@ Verify that VPN port `51820/UDP` is open and record the actual network traffic (
    cd WireGuard-VPN-Secure-Edge-Gateway
    ```
 2. Assign permissions and configure DuckDNS environment variables (if applicable).
-3. Launch the container cluster using Docker-Compose (Grant Docker Socket permissions if needed):
+3. Assgin permissions for generate-client-qr.sh
+   ```bash
+    chmod +x scripts/generate-client-qr.sh
+    sudo ./scripts/generate-client-qr.sh
+   ```
+5. Launch the container cluster using Docker-Compose (Grant Docker Socket permissions if needed):
    ```bash
    docker-compose up -d --build
    ```
