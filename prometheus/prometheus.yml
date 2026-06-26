@@ -1,1 +1,12 @@
-# File cấu hình luật quét của Prometheus
+
+global:
+  scrape_interval: 15s # Cứ 15 giây quét dữ liệu 1 lần
+
+scrape_configs:
+  - job_name: 'nginx-proxy-manager'
+    static_configs:
+      - targets: ['nginx-exporter:9113'] # Quét dữ liệu từ Nginx
+
+  - job_name: 'wireguard'
+    static_configs:
+      - targets: ['wireguard-exporter:9586'] # Quét dữ liệu từ WireGuard
