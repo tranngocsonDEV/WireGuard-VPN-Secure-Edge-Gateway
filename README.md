@@ -16,7 +16,7 @@ graph TD
     end
     
     Nginx -->|SSL Termination| Web[Internal Web Services]
-    WG -->|iptables / NAT Isolation| Subnet[Secure Subnets 10.0.0.0/24]
+    WG -->|iptables / NAT Isolation| Subnet[Secure Subnets 10.7.0.x/24]
 ```
 
 ## Features
