@@ -7,17 +7,28 @@ A robust, secure, and automated Remote Access VPN gateway built on enterprise vi
 ```mermaid
 graph TD
     User([Internet Traffic / Remote Client]) -->|Dynamic IP Domain| DDNS[DuckDNS]
-    DDNS -->|Port Forward 80/443/51820| PVE[Proxmox VE Hypervisor]
+    DDNS -->|Port Forward 80/4433/51820| PVE[Proxmox VE Hypervisor]
     PVE -->|KVM Virtual Machine| Ubuntu[Ubuntu Server VM]
     
-    subgraph Docker Microservices Cluster
+    subgraph Docker Microservices Cluster [Docker Container Subnet / vpn-monitor-net]
         Ubuntu -->|Port 80/443| Nginx[Nginx Reverse Proxy Manager]
         Ubuntu -->|Port 51820 UDP| WG[WireGuard VPN Gateway]
+        
+        %% Monitoring Layer Connection
+        Nginx -.->|Expose Metrics| NginxExp[Nginx Exporter:9113]
+        WG -.->|Read wg0.conf & Metrics| WGExp[WireGuard Exporter:9586]
+        
+        Prometheus[Prometheus Server:9090] -->|1. Scrape Metrics Every 15s| NginxExp
+        Prometheus -->|1. Scrape Metrics Every 15s| WGExp
+        
+        Grafana[Grafana Dashboard:3000] -->|2. Query Time-Series Data| Prometheus
     end
     
+    %% External Access & Routing
     Nginx -->|SSL Termination| Web[Internal Web Services]
     WG -->|iptables / NAT Isolation| Subnet[Secure Subnets 10.7.0.x/24]
-   Internal Web Services -->|Nginx Exporter
+    User -.->|Secure View Dashboard via Port 3000| Grafana
+
 ```
 
 ## Features
