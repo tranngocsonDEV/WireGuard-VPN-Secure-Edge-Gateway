@@ -17,8 +17,6 @@ graph TD
     
     Nginx -->|SSL Termination| Web[Internal Web Services]
     WG -->|iptables / NAT Isolation| Subnet[Secure Subnets 10.7.0.x/24]
-   Internal Web Services -->|Nginx Exporter
-
 ```
 
 ## Features
